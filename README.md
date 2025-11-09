@@ -1,46 +1,50 @@
-# GitHub Line Bot
+# 📦 Klink — GitHub Line Bot
 
-A simple Discord bot written in Python that automatically fetches and formats a specific line from a GitHub file when a user sends a link containing a file and line reference (e.g., `#L15`).
+A simple Discord bot written in Python that automatically fetches and formats specific lines from GitHub files when users send links containing line references (e.g., `#L15` or `#L10-L20`).
 
-## 📜 Features
-- Detects GitHub links in messages  
-- Parses repository, branch, file, and line number  
-- Fetches and displays the specified line of code  
-- Clean modular structure for easy extension  
+## ✨ Features
+- Detects GitHub links in Discord messages  
+- Parses repository, branch, file path, and line range  
+- Fetches and formats the referenced code snippet  
+- Lightweight and modular structure  
+- Supports multi-line snippets  
 
 ## 🧩 Project Structure
 ```
 
 klink/
-├── main.py               # bot startup and extension loading
-├── config.py             # stores the discord bot token
-├── requirements.txt      # python dependencies
+├── main.py               # Bot startup and cog loading
+├── config.py             # Stores the discord bot token
+├── requirements.txt      # Python dependencies
+├── cogs/
+│   └── listener.py       # Main listener that reacts to GitHub links
 └── utils/
-├── parser.py         # parses github urls
-└── fetcher.py        # fetches code content from github
+└── parse.py          # URL parser and GitHub raw content fetcher
 
 ````
 
 ## 🚀 Setup
-1. Clone this repository:
+
+1. **Clone the repository**
    ```bash
-   git https://github.com/spliffdasorte/klink.git
+   git clone https://github.com/spliffdasorte/klink.git
    cd klink
    ```
 
-2. Install dependencies:
+2. **Install dependencies**
 
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Add your bot token in `config.py`:
+3. **Add your bot token**
+   Edit `config.py`:
 
    ```python
    token = "YOUR_DISCORD_TOKEN_HERE"
    ```
 
-4. Run the bot:
+4. **Run the bot**
 
    ```bash
    python main.py
@@ -57,6 +61,25 @@ https://github.com/user/repo/blob/main/example.py#L10
 The bot replies with:
 
 ```
-🧾 example.py — line 10:
+```py
 print("Hello, world!")
 ```
+
+Or for multiple lines:
+
+```
+https://github.com/user/repo/blob/main/app/main.py#L5-L8
+```
+
+The bot replies with:
+
+````
+```py
+def greet():
+    print("Hi!")
+    return True
+````
+
+<div align="center">
+  <img width="746" height="429" alt="image" src="https://i.imgur.com/F7A4Wx4.png" />
+</div>
