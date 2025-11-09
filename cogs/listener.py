@@ -1,6 +1,6 @@
 from discord.ext import commands
 import re
-from utils import parser
+from utils import parse
 
 class GitHubListener(commands.Cog):
     def __init__(self, bot: commands.Bot):
