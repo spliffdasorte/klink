@@ -2,7 +2,7 @@ import asyncio
 import os
 import discord
 from discord.ext import commands
-from config import token
+#from config import token
 
 intents = discord.Intents.default()
 intents.message_content = True
