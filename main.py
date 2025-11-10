@@ -2,7 +2,7 @@ import asyncio
 import os
 import discord
 from discord.ext import commands
-#from config import token
+from config import token
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -26,11 +26,5 @@ async def on_ready():
         print("[CMD] Slash sync ✓")
     except Exception as e:
         print(f"[CMD] Sync ✗ {e}")
-
-
-token = os.getenv("token")
-
-if not token:
-    raise ValueError("missing DISCORD_TOKEN environment variable, try again.")
 
 asyncio.run(bot.start(token))
