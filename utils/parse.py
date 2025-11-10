@@ -66,7 +66,6 @@ async def fetch_x_data(tweet_id: str):
 
             data = await resp.json()
 
-            # Extrair vídeo (se existir)
             video_url = None
             for m in data.get("mediaDetails", []):
                 if m.get("type") == "video":
