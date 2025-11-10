@@ -27,4 +27,10 @@ async def on_ready():
     except Exception as e:
         print(f"[CMD] Sync ✗ {e}")
 
+
+token = os.getenv("token")
+
+if not token:
+    raise ValueError("missing DISCORD_TOKEN environment variable, try again.")
+
 asyncio.run(bot.start(token))
