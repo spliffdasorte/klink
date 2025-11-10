@@ -40,4 +40,15 @@ def get_file_content(data):
 
 def parseX_url(url):
     parsed = urlparse(url)
-        
+    parts = parsed.path.strip('/').split('/')
+    
+    if len(parts) < 3 or parts[1] != 'status':
+        return None
+    
+    username = parts[0]
+    tweet_id = parts[2]
+    
+    return {
+        'username': username,
+        'tweet_id': tweet_id
+    }

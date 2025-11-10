@@ -1,6 +1,6 @@
 from discord.ext import commands
 import re
-from utils import parse
+from utils.parse import parseX_url
 
 class XListener(commands.Cog):
     def __init__(self, bot):
@@ -12,7 +12,6 @@ class XListener(commands.Cog):
             return
 
         if message.guild is None:
-            await message.channel.send('no time in dms tro')
             return
             
         match = re.search(
@@ -23,10 +22,13 @@ class XListener(commands.Cog):
             return
         
         url = match.group(0)
-        
-        # data = parse.parse_url(url)
-        # if not data:
-        #     return
+        data = parseX_url(url)
+        if not data:
+            return 
+            
+        await message.channel.send(
+            f"Usuário: {data['username']} | Tweet ID: {data['tweet_id']}"
+        )
         
         
 
