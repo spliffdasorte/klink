@@ -13,12 +13,11 @@ class TwitterPost:
         self.text: str = tweet_data.get('text', '')
         self.replying_to: Optional[str] = tweet_data.get('replying_to')
 
-        self.media_urls: List[str] = []
-        if media_data:
-            photos = media_data.get('photos', [])
-            videos = media_data.get('videos', [])
-            all_media = photos + videos
-            self.media_urls = [item['url'] for item in all_media if 'url' in item]
+        photos = media_data.get('photos', [])
+        videos = media_data.get('videos', [])
+
+        self.photo_urls: List[str] = [item['url'] for item in photos if 'url' in item]
+        self.video_urls: List[str] = [item['url'] for item in videos if 'url' in item]
 
         self.quote_author: Optional[str] = None
         self.quote_username: Optional[str] = None
@@ -31,9 +30,16 @@ class TwitterPost:
             self.quote_username = quote_author_data.get('screen_name')
             self.quote_text = quote_data.get('text')
 
+            quote_media = quote_data.get('media', {})
+            quote_photos = quote_media.get('photos', [])
+            quote_videos = quote_media.get('videos', [])
+
+            self.photo_urls += [item['url'] for item in quote_photos if 'url' in item]
+            self.video_urls += [item['url'] for item in quote_videos if 'url' in item]
+
     @staticmethod
     def parse_url(url: str) -> Optional[Dict[str, str]]:
-        pattern = r'https?://(?:www\.)?(?:twitter|x)\.com/(\w+)/status/(\d+)'
+        pattern = r'(?i)https?://(?:www\.)?(?:twitter|x)\.com/(\w+)/status/(\d+)'
         match = re.search(pattern, url)
         if match:
             return {'username': match.group(1), 'tweet_id': match.group(2)}

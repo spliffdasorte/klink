@@ -20,7 +20,7 @@ class XListener(commands.Cog):
 
         if not found_tweets:
             return
-            
+
         try:
             await asyncio.sleep(0.5)
             await message.edit(suppress=True)
@@ -30,13 +30,14 @@ class XListener(commands.Cog):
         for tweet_data in found_tweets:
             post = await TwitterPost.fetch(tweet_data['username'], tweet_data['tweet_id'])
 
-            if not post:
-                continue
+            if not post or not post.video_urls:
+                continue  
 
             content = f"**{post.author}** (@{post.username})"
             if post.replying_to:
                 content += f"\nReplying to @{post.replying_to}"
-            content += f"\n{post.text}"
+            if post.text:
+                content += f"\n{post.text}"
 
             if post.quote_author and post.quote_username and post.quote_text:
                 quoted_lines = post.quote_text.split('\n')
@@ -45,29 +46,26 @@ class XListener(commands.Cog):
 
             container_components = [{"type": 10, "content": content}]
 
-            if post.media_urls:
-                media_items = [{"media": {"url": url}} for url in post.media_urls]
-                container_components.append({"type": 12, "items": media_items})
+            media_items = [{"media": {"url": url}} for url in post.video_urls]
+            container_components.append({"type": 12, "items": media_items})
 
             payload = {
                 "components": [{
                     "type": 17,
-                    "accent_color": 0x1DA1F2,
+                    "accent_color": 0x1DA1F2, 
                     "components": container_components
                 }],
                 "message_reference": {
-                    "message_id": str(message.id),
-                    "channel_id": str(message.channel.id),
-                    "guild_id": str(message.guild.id)
+                    "message_id": str(message.id)
                 },
-                "allowed_mentions": { "parse": [] }
+                "flags": 32768  
             }
 
             try:
                 route = Route('POST', '/channels/{channel_id}/messages', channel_id=message.channel.id)
                 await self.bot.http.request(route, json=payload)
             except Exception as e:
-                print(f"Falha ao enviar mensagem customizada do Twitter: {e}")
+                print(f"Erro ao enviar embed do Twitter: {e}")
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(XListener(bot))
