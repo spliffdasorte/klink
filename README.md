@@ -1,58 +1,93 @@
-# 📦 Klink — GitHub Line Bot
+# 📦 Klink — Discord Utility Bot
 
-A simple Discord bot written in Python that automatically fetches and formats specific lines from GitHub files when users send links containing line references (e.g., `#L15` or `#L10-L20`).
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg?logo=python&logoColor=white)
+![Discord.py](https://img.shields.io/badge/discord.py-2.3%2B-5865F2.svg?logo=discord&logoColor=white)
+![License](https://img.shields.io/badge/license-GNU%20GPLv3-green.svg)
+![Status](https://img.shields.io/badge/status-active-success.svg)
+![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)
+
+A lightweight Discord bot written in **Python** that automatically detects and enhances links from  
+**GitHub** and **Twitter/X** — fetching code snippets and re-embedding tweets with style and precision.
+
+---
 
 ## ✨ Features
-- Detects GitHub links in Discord messages  
-- Parses repository, branch, file path, and line range  
-- Fetches and formats the referenced code snippet  
-- Lightweight and modular structure  
-- Supports multi-line snippets  
+
+- **GitHub Line Snippets** → Detects GitHub links with line references (e.g. `#L15` or `#L10-L20`) and returns syntax-highlighted snippets.  
+- **Twitter/X Post Enhancer** → Replaces default Discord embeds with custom blue embeds featuring author info, tweet text, replies, quotes, and media (videos prioritized).  
+- **Modular Design** → Organized into self-contained cogs for easy extension and maintenance.  
+- **Rate Limiting & Error Handling** → Prevents spam and gracefully handles API failures.  
+- **Multi-Line & Media Support** → Handles code ranges, images, videos, and quoted/replied tweets seamlessly.
+
+---
 
 ## 🧩 Project Structure
+
 ```
 
 klink/
-├── main.py               # Bot startup and cog loading
-├── config.py             # Stores the discord bot token
-├── requirements.txt      # Python dependencies
+├── main.py              # Bot startup, intents setup, and cog loading
+├── config.py            # Discord bot token and configuration
+├── requirements.txt     # Python dependencies (discord.py, aiohttp, etc.)
 ├── cogs/
-│   └── listener.py       # Main listener that reacts to GitHub links
+│   ├── git_listener.py  # GitHub code snippet listener
+│   └── x_listener.py    # Twitter/X post embed listener
 └── utils/
-└── parse.py          # URL parser and GitHub raw content fetcher
+├── parse.py         # GitHub URL parser and raw content fetcher
+└── twitter.py       # Twitter/X API client and post parser
 
 ````
 
+---
+
 ## 🚀 Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/spliffdasorte/klink.git
-   cd klink
-   ```
+### 1. Clone the repository
+```bash
+git clone https://github.com/spliffdasorte/klink.git
+cd klink
+````
 
-2. **Install dependencies**
+### 2. Install dependencies
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-3. **Add your bot token**
-   Edit `config.py`:
+### 3. Add your Discord bot token
 
-   ```python
-   token = "YOUR_DISCORD_TOKEN_HERE"
-   ```
+Edit the file `config.py`:
 
-4. **Run the bot**
+```python
+DISCORD_TOKEN = "YOUR_DISCORD_TOKEN_HERE"
+```
 
-   ```bash
-   python main.py
-   ```
+### 4. Invite the bot to your server
 
-## 💡 Example
+* Create a bot at the [Discord Developer Portal](https://discord.com/developers/applications)
+* Enable **Message Content Intent**
+* Use the OAuth2 URL generator with these permissions:
 
-When a user sends:
+  * ✅ Send Messages
+  * ✅ Read Message History
+  * ✅ Embed Links
+  * ✅ Manage Messages *(for embed suppression)*
+
+### 5. Run the bot
+
+```bash
+python main.py
+```
+
+The bot will log in and automatically load all cogs.
+
+---
+
+## 💡 Examples
+
+### 🔹 GitHub Code Snippets
+
+When a user sends a GitHub link like:
 
 ```
 https://github.com/user/repo/blob/main/example.py#L10
@@ -60,26 +95,55 @@ https://github.com/user/repo/blob/main/example.py#L10
 
 The bot replies with:
 
-```
-```py
-print("Hello, world!")
-```
+> ```py
+> print("Hello, world!")
+> ```
 
-Or for multiple lines:
+For multiple lines:
 
 ```
 https://github.com/user/repo/blob/main/app/main.py#L5-L8
 ```
 
-The bot replies with:
+Response:
 
-````
-```py
-def greet():
-    print("Hi!")
-    return True
-````
+> ```py
+> def greet():
+>     print("Hi!")
+>     return True
+> ```
 
-<div align="center">
-  <img width="746" height="429" alt="image" src="https://i.imgur.com/F7A4Wx4.png" />
-</div>
+---
+
+### 🔹 Twitter/X Post Embedding
+
+When a user sends:
+
+```
+https://x.com/verycoolguy/status/1234567890
+```
+
+The bot:
+
+* Suppresses the default Discord embed
+* Sends a **custom blue embed** containing:
+
+  * 🧑 Author & handle
+  * 📝 Tweet text
+  * 🔁 Replies and quotes (if present)
+  * 🎥 Embedded media (videos prioritized)
+
+Example output:
+
+> **Very Cool Guy** (@verycoolguy)
+> Just started a live!
+>
+> 🎥 *Embedded video from the tweet*
+
+---
+
+## ⚠️ Limitations
+
+* Depends on **third-party APIs** (e.g. `fxtwitter.com` for tweet data).
+* Only works with **public GitHub repositories** (no private repo access).
+* Twitter/X endpoints may occasionally change, requiring small updates.
